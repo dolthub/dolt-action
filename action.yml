@@ -11,13 +11,13 @@ inputs:
     required: true
     default: ''
   message:
-    #description: 'Dolt commit message'
-    #required: true
-    #default: 'Automated GitHub-Actions commit'
+    description: 'Dolt commit message'
+    required: false
+    default: 'Automated GitHub-Actions commit'
   branch:
-    #description: 'Dolt branch name (will create if does not exist)'
-    #required: false
-    #default: 'master'
+    description: 'Dolt branch name (will create if does not exist)'
+    required: false
+    default: 'master'
   push:
     description: '`False` if dry-run. Defaults to `True`'
     required: false
@@ -38,13 +38,6 @@ inputs:
     description: 'Cred used to login to doltremoteapi'
     required: false
     default: ''
-
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.remote }}
-    - ${{ inputs.run }}
-    - ${{ inputs.message }}
-    - ${{ inputs.branch }}
-    - ${{ inputs.commit }}
