@@ -45,7 +45,8 @@ jobs:
             dolt table import -r --pk=id --file-type csv $tablename tmp.csv
           remote: 'max-hoffman/dolt_action_test'
           message: ${{ steps.date.outputs.date }}
-          commit: false
+          push: true
           branch: 'master'
           commit_user_email: max@dolthub.com
+          commit_author: 'Max Hoffman'
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
