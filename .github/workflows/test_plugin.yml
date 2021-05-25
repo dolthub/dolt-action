@@ -1,4 +1,12 @@
-on: [push]
+name: Test
+
+on:
+  push:
+    #branches:
+      #- main
+  pull_request:
+env:
+  spreadsheet_id: '16iUpjhWnPYDo4OUwxv1TlF9x975iPJ2WABgmpoJJdNY'
 
 jobs:
   hello_world_job:
@@ -9,11 +17,52 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Hello world action step
-        uses: ./ # Uses an action in the root directory
-        id: hello
+      - name: GSheet
+        id: 'update_worksheet'
+        uses: jroehl/gsheet.action@v1.0.0 # you can specify '@release' to always have the latest changes
         with:
-          who-to-greet: 'Mona the Octocat'
+          spreadsheetId: ${{ env.spreadsheet_id }}
+          commands: | # list of commands, specified as a valid JSON string
+            [
+              { "command": "getData", "args": { "range": "'Sheet1'!A1:D5" } }
+            ]
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+      - name: dump results
+        id: 'table_data'
+        env:
+          #  the output of the action can be found in ${{ steps.update_worksheet.outputs.results }}
+          results: ${{ steps.update_worksheet.outputs.results }}
+        run: |
+          #echo ::set-output:: results=$(echo "$results" | jq '.results[0].result.rawData | map(join(",")) | join("\n") | @csv')
+          echo ::set-output:: results=$(echo "$results" | jq '.results[0].result.rawData | .[0], .[1:][] | @csv')
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Dolt Import
+        uses: ./ # Uses an action in the root directory
+        id: 'dolt_import'
+        env:
+          results: ${{ steps.update_worksheet.outputs.results }}
+          tablename: 'aminals'
+        with:
+          run: |
+            dolt sql -q "create table if not exists $tablename (id bigint primary key, name text, speed bigint)"
+            echo "$results" | jq -r '.results[0].result.rawData | .[0], .[1:][] | @csv' > tmp.csv
+            dolt table import -r --pk=id --file-type csv $tablename tmp.csv
+          #id: '16iUpjhWnPYDo4OUwxv1TlF9x975iPJ2WABgmpoJJdNY'
+          #name: 'Sheet1'
+          #range: 'A1:E8'
+          remote: 'max-hoffman/dolt_action_test'
+          message: ${{ steps.date.outputs.date }}
+          commit: false
+          branch: 'master'
+          commit_user_email: max@dolthub.com
+          dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
+          #before: |
+            #dolt sql -q "create table t1 ()"
+          #after: |
       # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+      #- name: Get the output time
+        #run: echo "The time was ${{ steps.hello.outputs.time }}"

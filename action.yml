@@ -1,16 +1,50 @@
 # action.yml
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'Dolt-GSheets Action'
+description: 'Insert a versioned google sheet into a Dolt database'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  remote:
+    description: 'Dolt remote object store path'
     required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+    default: ''
+  run:
+    description: '(optional) Fine-tune data with a custom SQL query'
+    required: true
+    default: ''
+  message:
+    #description: 'Dolt commit message'
+    #required: true
+    #default: 'Automated GitHub-Actions commit'
+  branch:
+    #description: 'Dolt branch name (will create if does not exist)'
+    #required: false
+    #default: 'master'
+  push:
+    description: '`False` if dry-run. Defaults to `True`'
+    required: false
+    default: true
+  commit_user_name:
+    description: 'Name used for the commit user'
+    required: false
+    default: 'GitHub Actions'
+  commit_user_email:
+    description: 'Email address used for the commit user'
+    required: false
+    default: 'actions@github.com'
+  commit_author:
+    description: 'Value used for the commit author. Defaults to the username of whoever triggered this workflow run.'
+    required: false
+    default: '${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>'
+  dolthub_credential:
+    description: 'Cred used to login to doltremoteapi'
+    required: false
+    default: ''
+
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.who-to-greet }}
+    - ${{ inputs.remote }}
+    - ${{ inputs.run }}
+    - ${{ inputs.message }}
+    - ${{ inputs.branch }}
+    - ${{ inputs.commit }}
