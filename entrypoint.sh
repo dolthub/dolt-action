@@ -48,15 +48,13 @@ _run() {
 
 _commit() {
     dolt add .
-    dolt commit -m "$INPUT_MESSAGE"
-
     if [ -n "$(dolt diff)" ]; then
-      echo "dolt status is not clean"
-      exit 1
+        dolt commit -m "$INPUT_MESSAGE"
+        head="$(dolt sql -q "select hashof('HEAD')" -r csv | head -2 | tail -1)"
+        echo "::set-output name=commit::$head"
+    else
+      echo "dolt status is clean"
     fi
-
-    head="$(dolt sql -q "select hashof('HEAD')" -r csv | head -2 | tail -1)"
-    echo "::set-output name=commit::$head"
 }
 
 # TODO tagging

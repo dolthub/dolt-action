@@ -24,7 +24,7 @@ jobs:
           spreadsheetId: ${{ env.spreadsheet_id }}
           commands: | # list of commands, specified as a valid JSON string
             [
-              { "command": "getData", "args": { "range": "'Sheet1'!A1:D5" } }
+              { "command": "getData", "args": { "range": "'Sheet1'!A1:D99" } }
             ]
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
