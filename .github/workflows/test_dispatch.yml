@@ -47,12 +47,13 @@ jobs:
           spreadsheetId: ${{ github.event.inputs.spreadsheet_id }}
           commands: | # list of commands, specified as a valid JSON string
             [
-              { "command": "getData", "args": { "range": "'Sheet1'!${range}" } }
+              { "command": "getData", "args": { "range": "${NAME}!${RANGE}" } }
             ]
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
-          RANGE: ${{ github.event.inputs.range }}
+          RANGE: ${{ github.event.inputs.spreadsheet_range }}
+          NAME: ${{ github.event.inputs.spreadsheet_name }}
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
