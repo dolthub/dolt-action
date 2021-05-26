@@ -1,40 +1,40 @@
-name: Test
+name: Dispatch test
 
 on:
   workflow_dispatch:
-  inputs:
-    spreadsheet_id:
-      description: ''
-      required: false
-      default: '16iUpjhWnPYDo4OUwxv1TlF9x975iPJ2WABgmpoJJdNY'
-    spreadsheet_name:
-      description: ''
-      required: false
-      default: 'Sheet1'
-    spreadsheet_range:
-      description: ''
-      required: false
-      default: 'A1:D99'
-    dolt_remote:
-      description: ''
-      required: false
-      default: 'max-hoffman/dolt_action_test'
-    dolt_branch:
-      description: ''
-      required: false
-      default: 'master'
-    dolt_push:
-      description: ''
-      required: false
-      default: false
-    dolt_tablename:
-      description: ''
-      required: false
-      default: 'aminals'
+    inputs:
+      spreadsheet_id:
+        description: ''
+        required: false
+        default: '16iUpjhWnPYDo4OUwxv1TlF9x975iPJ2WABgmpoJJdNY'
+      spreadsheet_name:
+        description: ''
+        required: false
+        default: 'Sheet1'
+      spreadsheet_range:
+        description: ''
+        required: false
+        default: 'A1:D99'
+      dolt_remote:
+        description: ''
+        required: false
+        default: 'max-hoffman/dolt_action_test'
+      dolt_branch:
+        description: ''
+        required: false
+        default: 'master'
+      dolt_push:
+        description: ''
+        required: false
+        default: false
+      dolt_tablename:
+        description: ''
+        required: false
+        default: 'aminals'
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: POC
     steps:
       # To use this repository's private action,
       # you must check out the repository
