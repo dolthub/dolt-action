@@ -48,7 +48,8 @@ _run() {
 
 _commit() {
     dolt add .
-    if [ -n "$(dolt diff)" ]; then
+    status="$(dolt sql -q "select * from dolt_status where staged = true limit 1" -r csv | wc -l)"
+    if [ "$status" -ge 2 ]; then
         dolt commit -m "$INPUT_MESSAGE"
         head="$(dolt sql -q "select hashof('HEAD')" -r csv | head -2 | tail -1)"
         echo "::set-output name=commit::$head"
