@@ -7,6 +7,8 @@ on:
   pull_request:
 env:
   spreadsheet_id: '16iUpjhWnPYDo4OUwxv1TlF9x975iPJ2WABgmpoJJdNY'
+  name: 'Sheet1'
+  range: 'A1:D99'
 
 jobs:
   hello_world_job:
@@ -24,7 +26,7 @@ jobs:
           spreadsheetId: ${{ env.spreadsheet_id }}
           commands: | # list of commands, specified as a valid JSON string
             [
-              { "command": "getData", "args": { "range": "'Sheet1'!A1:D99" } }
+              { "command": "getData", "args": { "range": "${{ env.name }}!$ {{ env.range }}" } }
             ]
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
