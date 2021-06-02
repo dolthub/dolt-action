@@ -38,6 +38,9 @@ inputs:
     description: 'Cred used to login to doltremoteapi'
     required: false
     default: ''
+outputs:
+  results:
+    description: 'The output csv filenames as an array'
 runs:
   using: 'docker'
   image: 'Dockerfile'

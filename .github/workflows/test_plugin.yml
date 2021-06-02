@@ -6,9 +6,15 @@ on:
       #- main
   pull_request:
 env:
-  spreadsheet_id: '16iUpjhWnPYDo4OUwxv1TlF9x975iPJ2WABgmpoJJdNY'
-  name: 'Sheet1'
-  range: 'A1:D99'
+  spreadsheet_id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
+  name: 'temp'
+  range: 'A1:I99'
+  branch: 'master'
+  table: 'eli5'
+  push: false
+  remote: 'max-hoffman/dolt_action_test'
+  create: 'create table if not exists eli5 (q_id text primary key, title text, selftext text, document text, subreddit text, answers json, title_urls json, selftext_urls json, answers_urls json)'
+  pk: 'q_id'
 
 jobs:
   hello_world_job:
@@ -19,36 +25,33 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - name: GSheet
-        id: 'update_worksheet'
-        uses: jroehl/gsheet.action@v1.0.0 # you can specify '@release' to always have the latest changes
+      - name: Pull GSheet data
+        id: 'sheet_to_csv'
+        uses: dolthub/gsheets-to-csv@v0
         with:
-          spreadsheetId: ${{ env.spreadsheet_id }}
-          commands: | # list of commands, specified as a valid JSON string
+          creds: ${{ secrets.GSHEET_CREDENTIALS }}
+          tempdir: ${{ github.workspace }}
+          sheets: |
             [
-              { "command": "getData", "args": { "range": "${{ env.name }}!${{ env.range }}" } }
+              { "id": "${{ env.spreadsheet_id }}" }
             ]
-        env:
-          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
-          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Dolt Import
         uses: ./ # Uses an action in the root directory
         id: 'dolt_import'
         env:
-          results: ${{ steps.update_worksheet.outputs.results }}
-          tablename: 'aminals'
+          FILES: ${{ steps.sheet_to_csv.outputs.results }}
         with:
           run: |
-            dolt sql -q "create table if not exists $tablename (id bigint primary key, name text, speed bigint)"
-            echo "$results" | jq -r '.results[0].result.rawData | .[0], .[1:][] | @csv' > tmp.csv
-            dolt table import -r --pk=id --file-type csv $tablename tmp.csv
-          remote: 'max-hoffman/dolt_action_test'
-          message: ${{ steps.date.outputs.date }}
-          push: true
-          branch: 'master'
+            dolt sql -q "${{ env.create }}"
+            echo "$FILES"
+            echo "$FILES" | jq -c ".[0]" | while read j; do
+                eval file=$j
+                dolt table import -r --pk=${{ env.pk }} --file-type csv ${{env.table}} "${file}"
+            done
+          remote: ${{ env.remote }}
+          message: 'Dot script wrapped commit'
+          push: ${{ env.push }}
+          branch: ${{ env.branch }}
           commit_user_email: max@dolthub.com
           commit_author: 'Max Hoffman'
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}

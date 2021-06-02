@@ -43,7 +43,7 @@ _clone () {
 }
 
 _run() {
-    /bin/bash -c "$INPUT_RUN"
+    /bin/bash -xc "$INPUT_RUN"
 }
 
 _commit() {
