@@ -1,5 +1,4 @@
-# Container image that runs your code
-FROM alpine:3.10
+FROM python:3.9.5-alpine
 
 RUN apk add --no-cache bash curl jq git \
     && curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash \
