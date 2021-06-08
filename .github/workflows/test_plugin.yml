@@ -2,18 +2,15 @@ name: Test
 
 on:
   push:
-    #branches:
-      #- main
+    branches:
+      - master
   pull_request:
 env:
-  spreadsheet_id: '1ZbkUf1tAzt_Lhh1G8ezDgyU1AdUnm26xzPYLtdtWsI8'
-  name: 'temp'
-  range: 'A1:I99'
+  spreadsheet_id: '1Ihu20yDAo0Bpbc9canYgnn-XqQaRovQ6TfqKlYOxpOE'
+  agent_name: 'vivant'
   branch: 'master'
-  table: 'eli5'
   push: false
   remote: 'max-hoffman/dolt_action_test'
-  create: 'create table if not exists eli5 (q_id text primary key, title text, selftext text, document text, subreddit text, answers json, title_urls json, selftext_urls json, answers_urls json)'
   pk: 'q_id'
 
 jobs:
@@ -31,9 +28,13 @@ jobs:
         with:
           creds: ${{ secrets.GSHEET_CREDENTIALS }}
           tempdir: ${{ github.workspace }}
+          output_json: True
           sheets: |
             [
-              { "id": "${{ env.spreadsheet_id }}" }
+              { "id": "${{ env.spreadsheet_id }}", "name": "responses_", "range": "A1:Z4" },
+              { "id": "${{ env.spreadsheet_id }}", "name": "0.delay", "range": "A1:Z4" },
+              { "id": "${{ env.spreadsheet_id }}", "name": "0.neutral", "range": "A1:Z4" },
+              { "id": "${{ env.spreadsheet_id }}", "name": "1.positive", "range": "A1:Z4" }
             ]
       - name: Dolt Import
         uses: ./ # Uses an action in the root directory
@@ -42,12 +43,21 @@ jobs:
           FILES: ${{ steps.sheet_to_csv.outputs.results }}
         with:
           run: |
-            dolt sql -q "${{ env.create }}"
-            echo "$FILES"
-            echo "$FILES" | jq -c ".[0]" | while read j; do
-                eval file=$j
-                dolt table import -r --pk=${{ env.pk }} --file-type csv ${{env.table}} "${file}"
+            ls ${{github.workspace}}
+            filesByNewline=$(echo "$FILES" | jq -c ".[]")
+            file_arr=($filesByNewline)
+
+            file_list=
+            for (( i=0; i<${#file_arr[@]}; i++ ))
+            do
+               eval file="${file_arr[$i]}"
+               if [ $i -eq 0 ]; then
+                   python3 ${{github.workspace}}/scripts/format.py responses $file $file
+               fi
+               file_list+=("${file}")
             done
+
+            echo "File list: ${file_list[@]}"
           remote: ${{ env.remote }}
           message: 'Dot script wrapped commit'
           push: ${{ env.push }}

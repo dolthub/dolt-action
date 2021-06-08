@@ -22,14 +22,13 @@ _configure() {
         echo "${INPUT_DOLTHUB_CREDENTIAL}" | dolt creds import
     fi
 
-    # AWS
-    if [ ! -z "${INPUT_AWS_CREDENTIALS}" ]; then
-        echo "aws creds not properly handled yet"
-    fi
+    # AWS credentials -- set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION
 
     # GCP
     if [ ! -z "${INPUT_GCP_CREDENTIALS}" ]; then
-        echo "gcp creds not properly handled yet"
+        #echo "${INPUT_GCP_CREDENTIALS}" | gcloud auth activate-service-account --key-file /dev/stdin
+        echo "${INPUT_GCP_CREDENTIALS}" >> /tmp/gcp_creds.json
+        export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_creds.json
     fi
 }
 
@@ -49,20 +48,27 @@ _run() {
 }
 
 _commit() {
-    dolt add .
-    status="$(dolt sql -q "select * from dolt_status where staged = true limit 1" -r csv | wc -l)"
-    if [ "${status}" -.github/workflows/test_plugin.ymlge 2 ]; then
-        dolt commit -m "${INPUT_MESSAGE}"
-        head="$(dolt sql -q "select hashof('HEAD')" -r csv | head -2 | tail -1)"
-        echo "::set-output name=commit::${head}"
-    else
-      echo "dolt status is clean"
+    if [ -n "${INPUT_COMMIT_MESSAGE}" ]; then
+        dolt add .
+        status="$(dolt sql -q "select * from dolt_status where staged = true limit 1" -r csv | wc -l)"
+        if [ "${status}" -ge 2 ]; then
+            dolt commit -m "${INPUT_COMMIT_MESSAGE}"
+            head="$(dolt sql -q "select hashof('HEAD')" -r csv | head -2 | tail -1)"
+            echo "::set-output name=commit::${head}"
+        else
+          echo "dolt status is clean"
+        fi
     fi
 }
 
-# TODO tagging
 _tag() {
-    echo "todo: tagging"
+    if [ -n "${INPUT_TAG_NAME}" ]; then
+        if [ -n "${INPUT_TAG_MESSAGE}" ]; then
+            dolt tag -m "${INPUT_TAG_MESSAGE}"  "${INPUT_TAG_NAME}" "${INPUT_TAG_REF}"
+        else
+            dolt tag "${INPUT_TAG_NAME}" "${INPUT_TAG_REF}"
+        fi
+    fi
 }
 
 _push() {

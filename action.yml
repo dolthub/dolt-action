@@ -1,6 +1,6 @@
 # action.yml
-name: 'Dolt-GSheets Action'
-description: 'Insert a versioned google sheet into a Dolt database'
+name: 'Dolt Action'
+description: 'Helper tool for executing Dolt commands'
 inputs:
   remote:
     description: 'Dolt remote object store path'
@@ -10,10 +10,6 @@ inputs:
     description: '(optional) Fine-tune data with a custom SQL query'
     required: true
     default: ''
-  message:
-    description: 'Dolt commit message'
-    required: false
-    default: 'Automated GitHub-Actions commit'
   branch:
     description: 'Dolt branch name (will create if does not exist)'
     required: false
@@ -22,6 +18,10 @@ inputs:
     description: '`False` if dry-run. Defaults to `True`'
     required: false
     default: true
+  commit_message:
+    description: 'Dolt commit message'
+    required: false
+    default: 'Automated GitHub-Actions commit'
   commit_user_name:
     description: 'Name used for the commit user'
     required: false
@@ -38,9 +38,21 @@ inputs:
     description: 'Cred used to login to doltremoteapi'
     required: false
     default: ''
+  tag_name:
+    description: ''
+    required: false
+    default: ''
+  tag_message:
+    description: ''
+    required: false
+    default: ''
+  tag_ref:
+    description: ''
+    required: false
+    default: ''
 outputs:
-  results:
-    description: 'The output csv filenames as an array'
+  commit:
+    description: "Commit hash executed during the workflow run"
 runs:
   using: 'docker'
   image: 'Dockerfile'
