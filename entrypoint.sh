@@ -2,6 +2,7 @@
 
 set -eox pipefail
 
+startin_directory=$(pwd)
 doltdb="${GITHUB_WORKSPACE}/doltdb"
 
 _main() {
@@ -11,6 +12,7 @@ _main() {
     _commit
     _tag
     _push
+    _cleanup
 }
 
 _configure() {
@@ -20,6 +22,7 @@ _configure() {
     # DoltHub password
     if [ ! -z "${INPUT_DOLTHUB_CREDENTIAL}" ]; then
         echo "${INPUT_DOLTHUB_CREDENTIAL}" | dolt creds import
+        echo "Authenticated DoltHub credentials"
     fi
 
     # AWS credentials -- set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION
@@ -29,16 +32,19 @@ _configure() {
         #echo "${INPUT_GCP_CREDENTIALS}" | gcloud auth activate-service-account --key-file /dev/stdin
         echo "${INPUT_GOOGLE_CREDENTIAL}" >> /tmp/gcp_creds.json
         export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_creds.json
+        echo "Autheniticated gcloud credentials"
     fi
 }
 
 _clone () {
+    echo "Cloning repo: ${INPUT_REMOTE}"
     dolt clone "${INPUT_REMOTE}" -b "${INPUT_BRANCH}" "${doltdb}" \
         || dolt clone "${INPUT_REMOTE}" -b master "${doltdb}"
     cd "${doltdb}"
 
     current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
-    if [ "${current_branch}" -ne "${INPUT_BRANCH}" ]; then
+    if [ "${current_branch}" != "${INPUT_BRANCH}" ]; then
+        echo "Creating new branch: ${INPUT_BRANCH}"
         dolt checkout -b "${INPUT_BRANCH}"
     fi
 }
@@ -50,7 +56,7 @@ _run() {
 _commit() {
     if [ -n "${INPUT_COMMIT_MESSAGE}" ]; then
         dolt add .
-        status="$(dolt sql -q "select * from dolt_status where staged = true limit 1" -r csv | wc -l)"
+        status="$(dolt sql -q "select ~/Downloads/fdata.csv* from dolt_status where staged = true limit 1" -r csv | wc -l)"
         if [ "${status}" -ge 2 ]; then
             dolt commit -m "${INPUT_COMMIT_MESSAGE}"
             head="$(dolt sql -q "select hashof('HEAD')" -r csv | head -2 | tail -1)"
@@ -75,6 +81,11 @@ _push() {
     if [ "${INPUT_PUSH}" = true ]; then
         dolt push origin "${INPUT_BRANCH}"
     fi
+}
+
+_cleanup() {
+    cd "${startin_directory}"
+    rm -rf "${doltdb}"
 }
 
 _main

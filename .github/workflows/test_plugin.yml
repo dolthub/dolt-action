@@ -27,34 +27,28 @@ jobs:
       - name: Test DoltHub remote
         uses: ./ # Uses an action in the root directory
         id: 'dolt_remote'
-        env:
-          FILES: ${{ steps.sheet_to_csv.outputs.results }}
         with:
           run: |
             dolt sql -q "select * from aminals"
           remote: ${{ env.dolthub_remote }}
-          message: 'Dolt script wrapped commit'
+          commit_message: 'Dolt script wrapped commit'
           push: ${{ env.push }}
           branch: ${{ env.branch }}
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
       - name: Test Google remote
         uses: ./ # Uses an action in the root directory
         id: 'google_remote'
-        env:
-          FILES: ${{ steps.sheet_to_csv.outputs.results }}
         with:
           run: |
             dolt sql -q "select * from aminals"
           remote: ${{ env.google_remote }}
-          message: 'Dolt script wrapped commit'
+          commit_message: 'Dolt script wrapped commit'
           push: ${{ env.push }}
           branch: ${{ env.branch }}
           google_credential: ${{ secrets.GOOGLE_CREDENTIAL }}
       - name: Test checkout branch
         uses: ./ # Uses an action in the root directory
         id: 'branch_checkout'
-        env:
-          FILES: ${{ steps.sheet_to_csv.outputs.results }}
         with:
           run: |
             current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
@@ -63,7 +57,7 @@ jobs:
                 exit 1
             fi
           remote: ${{ env.dolthub_remote }}
-          message: 'Dolt script wrapped commit'
+          commit_message: 'Dolt script wrapped commit'
           push: ${{ env.push }}
           branch: ${{ env.test_branch }}
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
