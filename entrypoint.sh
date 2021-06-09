@@ -2,7 +2,7 @@
 
 set -eox pipefail
 
-startin_directory=$(pwd)
+starting_directory=$(pwd)
 doltdb="${GITHUB_WORKSPACE}/doltdb"
 
 _main() {
@@ -84,7 +84,7 @@ _push() {
 }
 
 _cleanup() {
-    cd "${startin_directory}"
+    cd "${starting_directory}"
     rm -rf "${doltdb}"
 }
 
