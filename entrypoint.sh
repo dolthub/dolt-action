@@ -56,7 +56,7 @@ _run() {
 _commit() {
     if [ -n "${INPUT_COMMIT_MESSAGE}" ]; then
         dolt add .
-        status="$(dolt sql -q "select ~/Downloads/fdata.csv* from dolt_status where staged = true limit 1" -r csv | wc -l)"
+        status="$(dolt sql -q "select * from dolt_status where staged = true limit 1" -r csv | wc -l)"
         if [ "${status}" -ge 2 ]; then
             dolt commit -m "${INPUT_COMMIT_MESSAGE}"
             head="$(dolt sql -q "select hashof('HEAD')" -r csv | head -2 | tail -1)"
