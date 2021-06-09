@@ -18,6 +18,14 @@ inputs:
     description: '`False` if dry-run. Defaults to `True`'
     required: false
     default: true
+  dolthub_credential:
+    description: 'Cred used to authenticate dolthub'
+    required: false
+    default: ''
+  google_credential:
+    description: 'Cred used to push to a gcloud bucket'
+    required: false
+    default: ''
   commit_message:
     description: 'Dolt commit message'
     required: false
@@ -34,10 +42,6 @@ inputs:
     description: 'Value used for the commit author. Defaults to the username of whoever triggered this workflow run.'
     required: false
     default: '${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>'
-  dolthub_credential:
-    description: 'Cred used to login to doltremoteapi'
-    required: false
-    default: ''
   tag_name:
     description: ''
     required: false

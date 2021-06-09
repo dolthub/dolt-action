@@ -1,9 +1,9 @@
 # Dolt Action
 
-This GitHub Action plugin faciliates mutating Dolt repos in GitHub
+This GitHub Action helps mutate Dolt repos in GitHub
 Action workflows.
 
-## Usage
+## Example Usage
 
 ```yml
 name: Test
@@ -37,8 +37,9 @@ pushing a Dolt repository.
     credentialing technique.
 - `branch`: Indicate the branch to shallow-clone.
 - `run`: Bash script executed between pull and commit, push steps.
+- `dolthub_credential`: A JWT that grants access to DoltHub remotes.
+- `google_credential`: A `service_account.json` that grants access to
+    Google Cloud remotes.
 - `push`: Whether to persist changes or discard at the step conclusion.
 - `commit_` options: Automate a commit following the run script.
 - `tag_` options: Tag HEAD or another ref at the end of the workflow.
-
-

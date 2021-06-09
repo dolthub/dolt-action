@@ -25,9 +25,9 @@ _configure() {
     # AWS credentials -- set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION
 
     # GCP
-    if [ ! -z "${INPUT_GCP_CREDENTIALS}" ]; then
+    if [ ! -z "${INPUT_GOOGLE_CREDENTIAL}" ]; then
         #echo "${INPUT_GCP_CREDENTIALS}" | gcloud auth activate-service-account --key-file /dev/stdin
-        echo "${INPUT_GCP_CREDENTIALS}" >> /tmp/gcp_creds.json
+        echo "${INPUT_GOOGLE_CREDENTIAL}" >> /tmp/gcp_creds.json
         export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_creds.json
     fi
 }

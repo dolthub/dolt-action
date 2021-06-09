@@ -9,9 +9,11 @@ env:
   spreadsheet_id: '1Ihu20yDAo0Bpbc9canYgnn-XqQaRovQ6TfqKlYOxpOE'
   agent_name: 'vivant'
   branch: 'master'
+  test_branch: 'test'
+  new_branch: 'new'
   push: false
-  remote: 'max-hoffman/dolt_action_test'
-  pk: 'q_id'
+  dolthub_remote: 'max-hoffman/dolt_action_test'
+  google_remote: 'gs://max-dolt-test-bucket'
 
 jobs:
   hello_world_job:
@@ -22,46 +24,46 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Pull GSheet data
-        id: 'sheet_to_csv'
-        uses: dolthub/gsheets-to-csv@v0.1
-        with:
-          creds: ${{ secrets.GSHEET_CREDENTIALS }}
-          tempdir: ${{ github.workspace }}
-          output_json: True
-          sheets: |
-            [
-              { "id": "${{ env.spreadsheet_id }}", "name": "responses_", "range": "A1:Z4" },
-              { "id": "${{ env.spreadsheet_id }}", "name": "0.delay", "range": "A1:Z4" },
-              { "id": "${{ env.spreadsheet_id }}", "name": "0.neutral", "range": "A1:Z4" },
-              { "id": "${{ env.spreadsheet_id }}", "name": "1.positive", "range": "A1:Z4" }
-            ]
-      - name: Dolt Import
+      - name: Test DoltHub remote
         uses: ./ # Uses an action in the root directory
         id: 'dolt_import'
         env:
           FILES: ${{ steps.sheet_to_csv.outputs.results }}
         with:
           run: |
-            ls ${{github.workspace}}
-            filesByNewline=$(echo "$FILES" | jq -c ".[]")
-            file_arr=($filesByNewline)
-
-            file_list=
-            for (( i=0; i<${#file_arr[@]}; i++ ))
-            do
-               eval file="${file_arr[$i]}"
-               if [ $i -eq 0 ]; then
-                   python3 ${{github.workspace}}/scripts/format.py responses $file $file
-               fi
-               file_list+=("${file}")
-            done
-
-            echo "File list: ${file_list[@]}"
-          remote: ${{ env.remote }}
-          message: 'Dot script wrapped commit'
+            dolt sql -q "select * from aminals"
+          remote: ${{ env.dolthub_remote }}
+          message: 'Dolt script wrapped commit'
           push: ${{ env.push }}
           branch: ${{ env.branch }}
-          commit_user_email: max@dolthub.com
-          commit_author: 'Max Hoffman'
+          dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
+      - name: Test Google remote
+        uses: ./ # Uses an action in the root directory
+        id: 'dolt_import'
+        env:
+          FILES: ${{ steps.sheet_to_csv.outputs.results }}
+        with:
+          run: |
+            dolt sql -q "select * from aminals"
+          remote: ${{ env.google_remote }}
+          message: 'Dolt script wrapped commit'
+          push: ${{ env.push }}
+          branch: ${{ env.branch }}
+          google_credential: ${{ secrets.GOOGLE_CREDENTIAL }}
+      - name: Test checkout branch
+        uses: ./ # Uses an action in the root directory
+        id: 'dolt_import'
+        env:
+          FILES: ${{ steps.sheet_to_csv.outputs.results }}
+        with:
+          run: |
+            current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
+            if [ "$current_branch" != ${{ env.test_branch }} ]; then
+                echo "Wrong branch"
+                exit 1
+            fi
+          remote: ${{ env.dolthub_remote }}
+          message: 'Dolt script wrapped commit'
+          push: ${{ env.push }}
+          branch: ${{ env.test_branch }}
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
