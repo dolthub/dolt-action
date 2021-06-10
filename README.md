@@ -36,10 +36,16 @@ pushing a Dolt repository.
 - `remote`: DoltHub, S3, GCS remote endpoint. Each has a different
     authentication technique.
 - `branch`: Indicate the branch to shallow-clone.
-- `run`: Bash script executed between pull and commit, push steps.
+- `run`: Bash script executed after the pull stage and before commit stage.
+- `after`: Bash script executed between commit and push stages.
 - `dolthub_credential`: A JWT that grants access to DoltHub remotes.
 - `google_credential`: A `service_account.json` that grants access to
     Google Cloud remotes.
 - `push`: Whether to persist changes or discard at the step conclusion.
 - `commit_` options: Automate a commit following the run script.
 - `tag_` options: Tag HEAD or another ref at the end of the workflow.
+
+Outputs:
+
+- `commit`: If the script persisted a commit, this output stores the
+    associated commit hash.
