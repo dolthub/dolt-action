@@ -7,51 +7,55 @@ inputs:
     required: true
     default: ''
   run:
-    description: '(optional) Fine-tune data with a custom SQL query'
+    description: '(optional) Run command after clone and before commit'
     required: true
     default: ''
   branch:
-    description: 'Dolt branch name (will create if does not exist)'
+    description: '(optional) Dolt branch name (will create if does not exist)'
     required: false
     default: 'master'
   push:
-    description: '`False` if dry-run. Defaults to `True`'
+    description: '(optional) `False` if dry-run. Defaults to `True`'
     required: false
     default: true
   dolthub_credential:
-    description: 'Cred used to authenticate dolthub'
+    description: '(optional) Cred used to authenticate dolthub'
     required: false
     default: ''
   google_credential:
-    description: 'Cred used to push to a gcloud bucket'
+    description: '(optional) Cred used to authenticate gcloud'
     required: false
     default: ''
   commit_message:
-    description: 'Dolt commit message'
+    description: '(optional) Dolt commit message'
     required: false
     default: 'Automated GitHub-Actions commit'
   commit_user_name:
-    description: 'Name used for the commit user'
+    description: '(optional) Name used for the commit user'
     required: false
     default: 'GitHub Actions'
   commit_user_email:
-    description: 'Email address used for the commit user'
+    description: '(optional) Email address used for the commit user'
     required: false
     default: 'actions@github.com'
   commit_author:
-    description: 'Value used for the commit author. Defaults to the username of whoever triggered this workflow run.'
+    description: '(optional) Value used for the commit author. Defaults to the username of whoever triggered this workflow run.'
     required: false
     default: '${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>'
   tag_name:
-    description: ''
+    description: '(optional) Dolt tag name'
     required: false
     default: ''
   tag_message:
-    description: ''
+    description: '(optional) Dolt tag message'
     required: false
     default: ''
   tag_ref:
-    description: ''
+    description: '(optional) Tag branch or commit, default `HEAD`'
+    required: false
+    default: 'HEAD'
+  after:
+    description: '(optional) Run command after push and before cleanup'
     required: false
     default: ''
 outputs:

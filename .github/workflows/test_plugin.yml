@@ -14,6 +14,7 @@ env:
   push: false
   dolthub_remote: 'max-hoffman/dolt_action_test'
   google_remote: 'gs://max-dolt-test-bucket'
+  tag: "v0"
 
 jobs:
   hello_world_job:
@@ -60,4 +61,21 @@ jobs:
           commit_message: 'Dolt script wrapped commit'
           push: ${{ env.push }}
           branch: ${{ env.test_branch }}
+          dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
+      - name: Test tag branch
+        uses: ./ # Uses an action in the root directory
+        id: 'tag_branch'
+        with:
+          after: |
+            tag_cnt=$(dolt tag -v | grep ${{ env.tag }} | wc -l)
+            if [ $tag_cnt -ne 1 ]; then
+              echo "Tagging failure"
+              dolt tag -v
+              exit 1
+            fi
+          remote: ${{ env.dolthub_remote }}
+          commit_message: 'Dolt script wrapped commit'
+          push: ${{ env.push }}
+          tag_name: ${{ env.tag }}
+          tag_message: "New tag"
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}

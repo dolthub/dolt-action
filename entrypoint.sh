@@ -11,6 +11,7 @@ _main() {
     _run
     _commit
     _tag
+    _after
     _push
     _cleanup
 }
@@ -76,6 +77,11 @@ _tag() {
         fi
     fi
 }
+
+_after() {
+    /bin/bash -xc "${INPUT_AFTER}"
+}
+
 
 _push() {
     if [ "${INPUT_PUSH}" = true ]; then
