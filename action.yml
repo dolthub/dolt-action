@@ -6,8 +6,8 @@ inputs:
     description: 'Dolt remote object store path'
     required: true
     default: ''
-  run:
-    description: '(optional) Run command after clone and before commit'
+  before:
+    description: '(optional) Run command after before commit'
     required: true
     default: ''
   branch:
@@ -55,7 +55,7 @@ inputs:
     required: false
     default: 'HEAD'
   after:
-    description: '(optional) Run command after push and before cleanup'
+    description: '(optional) Run command after commit'
     required: false
     default: ''
 outputs:
