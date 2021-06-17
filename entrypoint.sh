@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eox pipefail
+set -eo pipefail
 
 starting_directory=$(pwd)
 doltdb="${GITHUB_WORKSPACE}/doltdb"
@@ -51,7 +51,7 @@ _clone () {
 }
 
 _before() {
-    /bin/bash -xc "${INPUT_BEFORE}"
+    /bin/bash -c "${INPUT_BEFORE}"
 }
 
 _commit() {
@@ -79,7 +79,7 @@ _tag() {
 }
 
 _after() {
-    /bin/bash -xc "${INPUT_AFTER}"
+    /bin/bash -c "${INPUT_AFTER}"
 }
 
 
