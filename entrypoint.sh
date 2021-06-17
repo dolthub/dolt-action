@@ -18,7 +18,7 @@ _main() {
 
 _configure() {
     dolt config --global --add user.name "${INPUT_COMMIT_USER_NAME}"
-    config --global --add user.email "${INPUT_COMMIT_USER_EMAIL}"
+    dolt config --global --add user.email "${INPUT_COMMIT_USER_EMAIL}"
 
     # DoltHub JWT
     if [ ! -z "${INPUT_DOLTHUB_CREDENTIAL}" ]; then
