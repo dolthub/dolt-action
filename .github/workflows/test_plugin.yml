@@ -5,6 +5,8 @@ on:
     branches:
       - master
   pull_request:
+  schedule:
+  - cron: "0 0 * * *"
 env:
   spreadsheet_id: '1Ihu20yDAo0Bpbc9canYgnn-XqQaRovQ6TfqKlYOxpOE'
   agent_name: 'vivant'
