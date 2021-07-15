@@ -49,9 +49,14 @@ _clone () {
     cd "${doltdb}"
 
     current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
+    target_branch="$(dolt sql -q "select count(*) from dolt_branches where name = '${INPUT_BRANCH}'" -r csv | head -2 | tail -1)"
     if [ "${current_branch}" != "${INPUT_BRANCH}" ]; then
-        echo "Creating new branch: ${INPUT_BRANCH}"
-        dolt checkout -b "${INPUT_BRANCH}"
+        if [ "${target_branch}" == "0" ]; then
+            echo "Creating new branch: ${INPUT_BRANCH}"
+            dolt checkout -b "${INPUT_BRANCH}"
+        else
+            dolt checkout "${INPUT_BRANCH}"
+        fi
     fi
 }
 
