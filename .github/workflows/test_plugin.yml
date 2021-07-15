@@ -42,7 +42,8 @@ jobs:
           branch: ${{ env.branch }}
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
       - run: |
-          sudo rm -rf $GITHUB_WORKSPACE/doltdb
+          chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "$GITHUB_WORKSPACE/doltdb/.dolt/noms"
+          echo "$(ls -al $GITHUB_WORKSPACE/doltdb/.dolt/noms)"
       - name: Test Google remote
         uses: ./ # Uses an action in the root directory
         id: 'google_remote'
