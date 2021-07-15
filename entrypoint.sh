@@ -37,6 +37,10 @@ _configure() {
 }
 
 _clone () {
+    if [ "${INPUT_CLEAR}" = true ]; then
+        rm -rf "${doltdb}"
+    fi
+
     if [ -d "${doltdb}" ]; then
         cd "${doltdb}"
         return

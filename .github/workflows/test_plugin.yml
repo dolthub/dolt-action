@@ -69,6 +69,7 @@ jobs:
             fi
           remote: ${{ env.dolthub_remote }}
           commit_message: 'Dolt script wrapped commit'
+          clear: true
           push: ${{ env.push }}
           branch: ${{ env.test_branch }}
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
