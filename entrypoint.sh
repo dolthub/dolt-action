@@ -46,7 +46,7 @@ _clone () {
         || dolt clone "${INPUT_REMOTE}" -b master "${doltdb}"
 
     #chmod 777 "${doltdb}"
-    chown -R "$(stat -c "%u:%g" /$GITHUB_WORKSPACE)" "${doltdb}"
+    chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "${doltdb}"
     cd "${doltdb}"
 
     current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"

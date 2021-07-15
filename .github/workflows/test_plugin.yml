@@ -33,6 +33,9 @@ jobs:
         with:
           before: |
             dolt sql -q "select * from aminals"
+            ls -al
+            echo "$(stat -c "%u:%g" $GITHUB_WORKSPACE)"
+            echo "$(stat -c "%u:%g" doltdb)"
           remote: ${{ env.dolthub_remote }}
           commit_message: 'Dolt script wrapped commit'
           push: ${{ env.push }}
