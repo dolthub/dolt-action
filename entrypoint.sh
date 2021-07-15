@@ -45,7 +45,8 @@ _clone () {
     dolt clone "${INPUT_REMOTE}" -b "${INPUT_BRANCH}" "${doltdb}" \
         || dolt clone "${INPUT_REMOTE}" -b master "${doltdb}"
 
-    chmod 777 "${doltdb}"
+    chmod -R 777 "${doltdb}"
+    chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "${doltdb}"
     echo "$(ls -al $doltdb)"
     cd "${doltdb}"
 
@@ -97,7 +98,6 @@ _push() {
 }
 
 _cleanup() {
-    chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "${doltdb}"
     cd "${starting_directory}"
 }
 
