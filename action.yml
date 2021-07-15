@@ -59,7 +59,7 @@ inputs:
     required: false
     default: ''
   clear:
-    description: 'Force remove a dolt directory'
+    description: 'Force remove the dolt directory before cloning another'
     required: false
     default: ''
 outputs:

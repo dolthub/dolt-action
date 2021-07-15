@@ -41,17 +41,11 @@ _clone () {
         rm -rf "${doltdb}"
     fi
 
-    if [ -d "${doltdb}" ]; then
-        cd "${doltdb}"
-        return
+    if [ ! -d "${doltdb}" ]; then
+        dolt clone "${INPUT_REMOTE}" -b "${INPUT_BRANCH}" "${doltdb}" \
+        || dolt clone "${INPUT_REMOTE}" -b master "${doltdb}"
     fi
 
-    dolt clone "${INPUT_REMOTE}" -b "${INPUT_BRANCH}" "${doltdb}" \
-        || dolt clone "${INPUT_REMOTE}" -b master "${doltdb}"
-
-    #chmod -R 777 "${doltdb}"
-    #chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "${doltdb}"
-    echo "$(ls -al $doltdb)"
     cd "${doltdb}"
 
     current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
