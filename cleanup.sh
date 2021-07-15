@@ -10,7 +10,7 @@ _main() {
 }
 
 _cleanup() {
-    rm -rf "${doltdb}"
+    sudo rm -rf "${doltdb}"
 }
 
 _main
