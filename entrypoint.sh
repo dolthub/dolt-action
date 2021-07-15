@@ -8,7 +8,6 @@ doltdb="${GITHUB_WORKSPACE}/doltdb"
 _main() {
     _configure
     _clone
-    cd "${doltdb}"
     _before
     _commit
     _tag
@@ -39,12 +38,14 @@ _configure() {
 
 _clone () {
     if [ -d "${doltdb}" ]; then
+        cd "${doltdb}"
         return
     fi
 
     dolt clone "${INPUT_REMOTE}" -b "${INPUT_BRANCH}" "${doltdb}" \
         || dolt clone "${INPUT_REMOTE}" -b master "${doltdb}"
-    chown -cvfR $(id -u $USER) "${doltdb}"
+
+    cd "${doltdb}"
 
     current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
     if [ "${current_branch}" != "${INPUT_BRANCH}" ]; then
