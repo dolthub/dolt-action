@@ -37,14 +37,26 @@ _configure() {
 }
 
 _clone () {
-    dolt clone "${INPUT_REMOTE}" -b "${INPUT_BRANCH}" "${doltdb}" \
+    if [ "${INPUT_CLEAR}" = true ]; then
+        rm -rf "${doltdb}"
+    fi
+
+    if [ ! -d "${doltdb}" ]; then
+        dolt clone "${INPUT_REMOTE}" -b "${INPUT_BRANCH}" "${doltdb}" \
         || dolt clone "${INPUT_REMOTE}" -b master "${doltdb}"
+    fi
+
     cd "${doltdb}"
 
     current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
+    target_branch="$(dolt sql -q "select count(*) from dolt_branches where name = '${INPUT_BRANCH}'" -r csv | head -2 | tail -1)"
     if [ "${current_branch}" != "${INPUT_BRANCH}" ]; then
-        echo "Creating new branch: ${INPUT_BRANCH}"
-        dolt checkout -b "${INPUT_BRANCH}"
+        if [ "${target_branch}" == "0" ]; then
+            echo "Creating new branch: ${INPUT_BRANCH}"
+            dolt checkout -b "${INPUT_BRANCH}"
+        else
+            dolt checkout "${INPUT_BRANCH}"
+        fi
     fi
 }
 
@@ -90,7 +102,6 @@ _push() {
 
 _cleanup() {
     cd "${starting_directory}"
-    rm -rf "${doltdb}"
 }
 
 _main
