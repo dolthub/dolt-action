@@ -41,6 +41,8 @@ jobs:
           push: ${{ env.push }}
           branch: ${{ env.branch }}
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
+      - run: |
+          sudo rm -rf $GITHUB_WORKSPACE/doltdb
       - name: Test Google remote
         uses: ./ # Uses an action in the root directory
         id: 'google_remote'
