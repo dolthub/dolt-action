@@ -64,3 +64,5 @@ outputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  main: entrypoint.sh
+  post: cleanup.sh
