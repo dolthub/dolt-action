@@ -7,8 +7,8 @@ doltdb="${GITHUB_WORKSPACE}/doltdb"
 
 _main() {
     _configure
-    cd "${doltdb}"
     _clone
+    cd "${doltdb}"
     _before
     _commit
     _tag
