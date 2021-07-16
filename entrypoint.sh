@@ -17,7 +17,10 @@ _main() {
 }
 
 _configure() {
-    su -R "$(stat -c "%u" $GITHUB_WORKSPACE)"
+    user="$(stat -c "%u" $GITHUB_WORKSPACE)"
+    echo $user
+    #chmod +x "$(which su)"
+    #su $user
 
     dolt config --global --add user.name "${INPUT_COMMIT_USER_NAME}"
     dolt config --global --add user.email "${INPUT_COMMIT_USER_EMAIL}"
