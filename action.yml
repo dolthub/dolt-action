@@ -65,7 +65,7 @@ inputs:
   user:
     description: 'Force remove the dolt directory before cloning another'
     required: false
-    default: '${{env.user}}'
+    default: '${{env.USER}}'
 outputs:
   commit:
     description: "Commit hash executed during the workflow run"

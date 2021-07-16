@@ -106,7 +106,13 @@ _push() {
 }
 
 _cleanup() {
+    chmod 777 -R "${doltdb}"
     cd "${starting_directory}"
 }
 
-_main
+_force_cleanup() {
+    rm -rf "${doltdb}"
+    cd "${starting_directory}"
+}
+
+_main || ( _force_cleanup && false )
