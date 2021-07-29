@@ -58,9 +58,14 @@ inputs:
     description: '(optional) Run command after commit'
     required: false
     default: ''
+  clear:
+    description: 'Force remove the dolt directory before cloning another'
+    required: false
+    default: ''
 outputs:
   commit:
     description: "Commit hash executed during the workflow run"
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  post-entrypoint: './cleanup.sh'
