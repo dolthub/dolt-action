@@ -42,6 +42,9 @@ pushing a Dolt repository.
 - `google_credential`: A `service_account.json` that grants access to
     Google Cloud remotes.
 - `push`: Whether to persist changes or discard at the step conclusion.
+- `clear` : A `dolt-action` deletes the local database during the
+    cleanup step. If concatenating multiple `dolt-action` steps,
+    `clear=False` will avoid unnecessarily re-cloning the database.
 - `commit_` options: Automate a commit following the before script.
 - `tag_` options: Tag HEAD or another ref at the end of the workflow.
 
