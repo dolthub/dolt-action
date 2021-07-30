@@ -104,4 +104,4 @@ _cleanup() {
     cd "${starting_directory}"
 }
 
-_main
+_main || false
