@@ -104,4 +104,4 @@ _cleanup() {
     cd "${starting_directory}"
 }
 
-_main || exit 1
+_main
