@@ -8,10 +8,10 @@ doltdb="${GITHUB_WORKSPACE}/doltdb"
 _main() {
     _configure
     _clone
-    _before || false
+    _before || exit 1
     _commit
     _tag
-    _after || false
+    _after || exit 1
     _push
     _cleanup
 }
