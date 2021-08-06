@@ -61,7 +61,7 @@ _clone () {
 }
 
 _before() {
-    /bin/bash -cv "${INPUT_BEFORE}" || false
+    /bin/bash -cv "${INPUT_BEFORE}"
 }
 
 _commit() {
@@ -90,7 +90,7 @@ _tag() {
 }
 
 _after() {
-    /bin/bash -cv "${INPUT_AFTER}" || false
+    /bin/bash -cv "${INPUT_AFTER}"
 }
 
 
