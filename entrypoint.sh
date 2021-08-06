@@ -61,7 +61,7 @@ _clone () {
 }
 
 _before() {
-    /bin/bash -c "${INPUT_BEFORE}"
+    /bin/bash -c "${INPUT_BEFORE}" || false
 }
 
 _commit() {
