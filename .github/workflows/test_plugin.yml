@@ -34,7 +34,9 @@ jobs:
         id: 'dolt_remote'
         with:
           before: |
+            echo "before exit"
             exit 1
+            echo "after exit"
             dolt sql -q "select * from aminals"
             echo "$(stat -c "%u:%g" $GITHUB_WORKSPACE)"
             echo "$(stat -c "%u:%g" doltdb)"

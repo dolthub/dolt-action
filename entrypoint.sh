@@ -61,7 +61,7 @@ _clone () {
 }
 
 _before() {
-    /bin/bash -c "${INPUT_BEFORE}" || false
+    /bin/bash -cv "${INPUT_BEFORE}" || false
 }
 
 _commit() {
@@ -90,7 +90,7 @@ _tag() {
 }
 
 _after() {
-    /bin/bash -c "${INPUT_AFTER}"
+    /bin/bash -cv "${INPUT_AFTER}" || false
 }
 
 
@@ -104,4 +104,4 @@ _cleanup() {
     cd "${starting_directory}"
 }
 
-_main || false
+_main || exit 1
