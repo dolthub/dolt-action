@@ -8,10 +8,10 @@ doltdb="${GITHUB_WORKSPACE}/doltdb"
 _main() {
     _configure
     _clone
-    _before
+    _before || exit 1
     _commit
     _tag
-    _after
+    _after || exit 1
     _push
     _cleanup
 }
@@ -61,7 +61,7 @@ _clone () {
 }
 
 _before() {
-    /bin/bash -c "${INPUT_BEFORE}"
+    /bin/bash -cv "${INPUT_BEFORE}"
 }
 
 _commit() {
@@ -90,7 +90,7 @@ _tag() {
 }
 
 _after() {
-    /bin/bash -c "${INPUT_AFTER}"
+    /bin/bash -cv "${INPUT_AFTER}"
 }
 
 
