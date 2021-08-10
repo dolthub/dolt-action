@@ -38,7 +38,7 @@ jobs:
             echo "$(stat -c "%u:%g" $GITHUB_WORKSPACE)"
             echo "$(stat -c "%u:%g" doltdb)"
             echo "$USER"
-            touch tmp1.csv
+            echo "hello" > tmp1.csv
           remote: ${{ env.dolthub_remote }}
           commit_message: 'Dolt script wrapped commit'
           push: ${{ env.push }}
@@ -47,6 +47,7 @@ jobs:
       - run: |
           #chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "$GITHUB_WORKSPACE/doltdb/.dolt/noms"
           echo "$(ls -al $GITHUB_WORKSPACE/doltdb/.dolt/noms)"
+          cat tmp1.csv
       - name: Test Google remote
         uses: ./ # Uses an action in the root directory
         id: 'google_remote'
