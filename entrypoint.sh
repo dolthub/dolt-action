@@ -5,12 +5,6 @@ set -eo pipefail
 starting_directory=$(pwd)
 doltdb="${GITHUB_WORKSPACE}/doltdb"
 
-TMP1=$(mktemp)
-TMP2=$(mktemp)
-TMP3=$(mktemp)
-TMP4=$(mktemp)
-TMP5=$(mktemp)
-
 _main() {
     _configure &&\
     _clone &&\
@@ -110,6 +104,8 @@ _cleanup() {
     cd "${starting_directory}"
     chmod -R 777 $HOME/.dolt
     chmod -R 777 "${doltdb}"
+    # new uncommitted csv files are marked for cleanup
+    git st --porcelain | awk '{print $2}' | grep .csv | xargs chmod 777
 }
 
 _main || (_cleanup && exit 1)
