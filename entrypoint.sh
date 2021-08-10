@@ -17,6 +17,11 @@ _main() {
 }
 
 _configure() {
+    user="$(stat -c "%u" $GITHUB_WORKSPACE)"
+    echo $user
+    #chmod +x "$(which su)"
+    #su $user
+
     dolt config --global --add user.name "${INPUT_COMMIT_USER_NAME}"
     dolt config --global --add user.email "${INPUT_COMMIT_USER_EMAIL}"
 
@@ -101,7 +106,13 @@ _push() {
 }
 
 _cleanup() {
+    chmod 777 -R "${doltdb}"
     cd "${starting_directory}"
 }
 
-_main
+_force_cleanup() {
+    rm -rf "${doltdb}"
+    cd "${starting_directory}"
+}
+
+_main || ( _force_cleanup && false )
