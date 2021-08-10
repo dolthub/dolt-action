@@ -19,7 +19,6 @@ _main() {
 _configure() {
     dolt config --global --add user.name "${INPUT_COMMIT_USER_NAME}"
     dolt config --global --add user.email "${INPUT_COMMIT_USER_EMAIL}"
-    chmod -R 777 $HOME/.dolt
 
     # DoltHub JWT
     if [ ! -z "${INPUT_DOLTHUB_CREDENTIAL}" ]; then
@@ -47,7 +46,6 @@ _clone () {
         || dolt clone "${INPUT_REMOTE}" -b master "${doltdb}"
     fi
 
-    chmod -R 777 "${doltdb}"
     cd "${doltdb}"
 
     current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
