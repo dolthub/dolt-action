@@ -38,6 +38,9 @@ jobs:
             echo "$(stat -c "%u:%g" $GITHUB_WORKSPACE)"
             echo "$(stat -c "%u:%g" doltdb)"
             echo "$USER"
+            echo $TMP1
+            echo $TMP2
+            echo $(mktemp)
           remote: ${{ env.dolthub_remote }}
           commit_message: 'Dolt script wrapped commit'
           push: ${{ env.push }}

@@ -5,6 +5,12 @@ set -eo pipefail
 starting_directory=$(pwd)
 doltdb="${GITHUB_WORKSPACE}/doltdb"
 
+TMP1=$(mktemp)
+TMP2=$(mktemp)
+TMP3=$(mktemp)
+TMP4=$(mktemp)
+TMP5=$(mktemp)
+
 _main() {
     _configure &&\
     _clone &&\
