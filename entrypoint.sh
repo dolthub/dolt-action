@@ -105,7 +105,7 @@ _cleanup() {
     chmod -R 777 $HOME/.dolt
     chmod -R 777 "${doltdb}"
     # new uncommitted csv files are marked for cleanup
-    git st --porcelain | awk '{print $2}' | grep .csv | xargs chmod 777
+    git status --porcelain | awk '{print $2}' | grep .csv | xargs chmod 777
 }
 
 _main || (_cleanup && exit 1)
