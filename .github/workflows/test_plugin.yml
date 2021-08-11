@@ -45,7 +45,7 @@ jobs:
           branch: ${{ env.branch }}
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
       - run: |
-          cat tmp1.csv
+          ls -al
       - name: Test Google remote
         uses: ./ # Uses an action in the root directory
         id: 'google_remote'
