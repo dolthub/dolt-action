@@ -4,15 +4,17 @@ set -eo pipefail
 
 starting_directory=$(pwd)
 doltdb="${GITHUB_WORKSPACE}/doltdb"
+#start_date=$(date)
+tmp_start=$(mktemp)
 
 _main() {
-    _configure
-    _clone
-    _before || exit 1
-    _commit
-    _tag
-    _after || exit 1
-    _push
+    _configure &&\
+    _clone &&\
+    _before &&\
+    _commit &&\
+    _tag &&\
+    _after &&\
+    _push &&\
     _cleanup
 }
 
@@ -102,6 +104,8 @@ _push() {
 
 _cleanup() {
     cd "${starting_directory}"
+    chmod -R 777 $HOME/.dolt
+    chmod -R 777 "${doltdb}"
 }
 
-_main
+_main || (_cleanup && exit 1)

@@ -28,7 +28,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - run: echo "$(id -u $USER)"
-      - run: ls -al
       - name: Test DoltHub remote
         uses: ./ # Uses an action in the root directory
         id: 'dolt_remote'
@@ -38,14 +37,12 @@ jobs:
             echo "$(stat -c "%u:%g" $GITHUB_WORKSPACE)"
             echo "$(stat -c "%u:%g" doltdb)"
             echo "$USER"
+            echo "hello" > tmp1.csv
           remote: ${{ env.dolthub_remote }}
           commit_message: 'Dolt script wrapped commit'
           push: ${{ env.push }}
           branch: ${{ env.branch }}
           dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
-      - run: |
-          #chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "$GITHUB_WORKSPACE/doltdb/.dolt/noms"
-          echo "$(ls -al $GITHUB_WORKSPACE/doltdb/.dolt/noms)"
       - name: Test Google remote
         uses: ./ # Uses an action in the root directory
         id: 'google_remote'
