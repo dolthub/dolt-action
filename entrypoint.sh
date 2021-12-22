@@ -4,10 +4,10 @@ set -eo pipefail
 
 starting_directory=$(pwd)
 doltdb="${GITHUB_WORKSPACE}/doltdb"
-#start_date=$(date)
 tmp_start=$(mktemp)
 
 _main() {
+    _version &&\
     _configure &&\
     _clone &&\
     _before &&\
@@ -16,6 +16,12 @@ _main() {
     _after &&\
     _push &&\
     _cleanup
+}
+
+_version() {
+    if [ ! -z "${INPUT_DOLT_VERSION}" ]; then
+        curl -L https://github.com/dolthub/dolt/releases/download/${INPUT_DOLT_VERSION}/install.sh | bash
+    fi
 }
 
 _configure() {
