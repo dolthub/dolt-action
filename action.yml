@@ -62,6 +62,10 @@ inputs:
     description: 'Force remove the dolt directory before cloning another'
     required: false
     default: ''
+  dolt_version:
+    description: 'Specify Dolt version'
+    required: false
+    default: ''
 outputs:
   commit:
     description: "Commit hash executed during the workflow run"
