@@ -13,5 +13,6 @@ ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
 COPY entrypoint.sh /entrypoint.sh
 COPY cleanup.sh /cleanup.sh
+COPY install.sh /install.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
