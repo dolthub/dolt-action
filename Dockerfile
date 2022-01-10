@@ -1,8 +1,8 @@
 FROM python:3.9.5-alpine
 
+ARG dolt_version=0.28.4
 COPY install.sh /install.sh
 
-ARG dolt_version=0.28.4
 RUN apk add --no-cache bash curl jq git \
     && DOLT_VERSION=$dolt_version /install.sh \
     && mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 \
