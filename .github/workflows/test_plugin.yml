@@ -27,6 +27,7 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
+      - run: echo "$(id -u $USER)"
       #- name: Test DoltHub remote
         #uses: ./ # Uses an action in the root directory
         #id: 'dolt_remote'
