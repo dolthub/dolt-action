@@ -27,61 +27,75 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - run: echo "$(id -u $USER)"
-      - run: ls -al
-      - name: Test DoltHub remote
+      #- name: Test DoltHub remote
+        #uses: ./ # Uses an action in the root directory
+        #id: 'dolt_remote'
+        #with:
+          #before: |
+            #dolt sql -q "select * from aminals"
+            #echo "$(stat -c "%u:%g" $GITHUB_WORKSPACE)"
+            #echo "$(stat -c "%u:%g" doltdb)"
+            #echo "$USER"
+          #remote: ${{ env.dolthub_remote }}
+          #commit_message: 'Dolt script wrapped commit'
+          #push: ${{ env.push }}
+          #branch: ${{ env.branch }}
+          #dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
+      #- run: |
+          ##chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "$GITHUB_WORKSPACE/doltdb/.dolt/noms"
+          #echo "$(ls -al $GITHUB_WORKSPACE/doltdb/.dolt/noms)"
+      #- name: Test Google remote
+        #uses: ./ # Uses an action in the root directory
+        #id: 'google_remote'
+        #with:
+          #before: |
+            #dolt sql -q "select * from aminals"
+          #remote: ${{ env.google_remote }}
+          #commit_message: 'Dolt script wrapped commit'
+          #push: ${{ env.push }}
+          #branch: ${{ env.branch }}
+          #google_credential: ${{ secrets.GOOGLE_CREDENTIAL }}
+      #- name: Test checkout branch
+        #uses: ./ # Uses an action in the root directory
+        #id: 'branch_checkout'
+        #with:
+          #before: |
+            #current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
+            #if [ "$current_branch" != ${{ env.test_branch }} ]; then
+                #echo "Wrong branch"
+                #exit 1
+            #fi
+          #remote: ${{ env.dolthub_remote }}
+          #commit_message: 'Dolt script wrapped commit'
+          #clear: true
+          #push: ${{ env.push }}
+          #branch: ${{ env.test_branch }}
+          #dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
+      #- name: Test tag branch
+        #uses: ./ # Uses an action in the root directory
+        #id: 'tag_branch'
+        #with:
+          #after: |
+            #tag_cnt=$(dolt tag -v | grep ${{ env.tag }} | wc -l)
+            #if [ $tag_cnt -ne 1 ]; then
+              #echo "Tagging failure"
+              #dolt tag -v
+              #exit 1
+            #fi
+          #remote: ${{ env.dolthub_remote }}
+          #dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
+          #push: ${{ env.push }}
+          #tag_name: ${{ env.tag }}
+          #tag_message: "New tag"
+      - name: Test dolt version
         uses: ./ # Uses an action in the root directory
-        id: 'dolt_remote'
-        with:
-          before: |
-            dolt sql -q "select * from aminals"
-            echo "$(stat -c "%u:%g" $GITHUB_WORKSPACE)"
-            echo "$(stat -c "%u:%g" doltdb)"
-            echo "$USER"
-          remote: ${{ env.dolthub_remote }}
-          commit_message: 'Dolt script wrapped commit'
-          push: ${{ env.push }}
-          branch: ${{ env.branch }}
-          dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
-      - run: |
-          #chown -R "$(stat -c "%u:%g" $GITHUB_WORKSPACE)" "$GITHUB_WORKSPACE/doltdb/.dolt/noms"
-          echo "$(ls -al $GITHUB_WORKSPACE/doltdb/.dolt/noms)"
-      - name: Test Google remote
-        uses: ./ # Uses an action in the root directory
-        id: 'google_remote'
-        with:
-          before: |
-            dolt sql -q "select * from aminals"
-          remote: ${{ env.google_remote }}
-          commit_message: 'Dolt script wrapped commit'
-          push: ${{ env.push }}
-          branch: ${{ env.branch }}
-          google_credential: ${{ secrets.GOOGLE_CREDENTIAL }}
-      - name: Test checkout branch
-        uses: ./ # Uses an action in the root directory
-        id: 'branch_checkout'
-        with:
-          before: |
-            current_branch="$(dolt sql -q "select active_branch()" -r csv | head -2 | tail -1)"
-            if [ "$current_branch" != ${{ env.test_branch }} ]; then
-                echo "Wrong branch"
-                exit 1
-            fi
-          remote: ${{ env.dolthub_remote }}
-          commit_message: 'Dolt script wrapped commit'
-          clear: true
-          push: ${{ env.push }}
-          branch: ${{ env.test_branch }}
-          dolthub_credential: ${{ secrets.DOLTHUB_CREDENTIAL }}
-      - name: Test tag branch
-        uses: ./ # Uses an action in the root directory
-        id: 'tag_branch'
+        id: 'dolt_version'
         with:
           after: |
-            tag_cnt=$(dolt tag -v | grep ${{ env.tag }} | wc -l)
-            if [ $tag_cnt -ne 1 ]; then
-              echo "Tagging failure"
-              dolt tag -v
+            version=$(dolt version | awk '{print $3}')
+            if [ $version != "0.28.4" ]; then
+              echo "Dolt version failure"
+              dolt version
               exit 1
             fi
           remote: ${{ env.dolthub_remote }}
@@ -89,3 +103,4 @@ jobs:
           push: ${{ env.push }}
           tag_name: ${{ env.tag }}
           tag_message: "New tag"
+          dolt_version: "0.28.4"
