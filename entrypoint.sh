@@ -20,7 +20,7 @@ _main() {
 _version() {
     if [ ! -z "${INPUT_DOLT_VERSION}" ]; then
         echo "Downloading Dolt version ${INPUT_DOLT_VERSION}"
-        sudo curl -L https://github.com/dolthub/dolt/releases/download/${INPUT_DOLT_VERSION}/install.sh | bash
+        sudo -u root curl -L https://github.com/dolthub/dolt/releases/download/${INPUT_DOLT_VERSION}/install.sh | bash
     fi
 }
 
