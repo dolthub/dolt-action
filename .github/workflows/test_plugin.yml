@@ -104,4 +104,4 @@ jobs:
           push: ${{ env.push }}
           tag_name: ${{ env.tag }}
           tag_message: "New tag"
-          dolt_version: "0.28.4"
+          dolt_version: "v0.28.4"
