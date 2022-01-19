@@ -7,7 +7,7 @@ RUN apk add --no-cache bash curl jq git \
     && dolt config --global --add metrics.port 443 \
     && curl -sSL https://sdk.cloud.google.com | bash
 
-USER 1001
+# USER 1001
 
 ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 

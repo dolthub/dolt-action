@@ -9,12 +9,12 @@ _main() {
     _version
     _configure
     _clone
-    _before || exit 1
-    _commit
-    _tag
-    _after || exit 1
-    _push
-    _cleanup
+    # _before || exit 1
+    # _commit
+    # _tag
+    # _after || exit 1
+    # _push
+    # _cleanup
 }
 
 _version() {
