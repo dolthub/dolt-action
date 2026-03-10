@@ -1,4 +1,4 @@
-FROM python:3.9.5-alpine
+FROM python:3.13-alpine
 
 RUN apk add --no-cache bash curl jq git \
     && curl -L https://github.com/dolthub/dolt/releases/latest/download/install.sh | bash \
@@ -9,7 +9,7 @@ RUN apk add --no-cache bash curl jq git \
 
 USER 1001
 
-ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+ENV PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
 COPY entrypoint.sh /entrypoint.sh
 COPY cleanup.sh /cleanup.sh
