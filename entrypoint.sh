@@ -80,7 +80,7 @@ _commit() {
             echo "committing changes"
             dolt commit -m "${INPUT_COMMIT_MESSAGE}"
             head="$(dolt sql -q "select hashof('HEAD')" -r csv | head -2 | tail -1)"
-            echo "::set-output name=commit::${head}"
+            echo "commit=${head}" >> $GITHUB_OUTPUT
         fi
     fi
 }
